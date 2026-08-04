@@ -1,0 +1,186 @@
+---
+title: "sustainas: sustainability analysis"
+author: "Weksi Budiaji"
+date: "`r Sys.Date()`"
+output: html_vignette
+abstract: |
+  The [**sustainas**](https://cran.r-project.org/package=sustainas) vignette 
+  consists of two parts of sustainability analysis.
+  The first part is Rapid appraisal for fisheries (rapfish). It has 
+  objects coordinates of sustainability positions, plots, and leverage. 
+  The next part is sustanability livelihood analysis (SLA) where it 
+  results in livelihood vulnerability indices among objects. 
+references:
+- id: hanh
+  title: "The Livelihood Vulnerability Index: A pragmatic approach to assessing risks from climate variability and change—A case study in Mozambique"
+  author:
+  - family: Hahn
+    given: M. B. 
+  - family: Riederer
+    given: A. M.   
+  - family: Foster
+    given: S. O.
+  container-title: Global Environmental Change
+  volume: 19
+  URL: 'http://doi.org/10.1016/j.gloenvcha.2008.11.002'
+  DOI: 10.1016/j.gloenvcha.2008.11.002
+  page: 74-88
+  type: article-journal
+  issued:
+    year: 2009
+    
+- id: kavana
+  title: "Implementing Microsoft Excel software for Rapfish: a technique for the rapid appraisal of fisheries status"
+  author:
+  - family: Kavanagh
+    given: P.   
+  - family: Pitcher
+    given: T. J. 
+  URL: 'http://dx.doi.org/10.14288/1.0074801'
+  DOI: 10.14288/1.0074801
+  type: article-journal
+  issued:
+    year: 2004
+- id: bryson
+  title: "What to do when Stakeholders matter"
+  author:
+  - family: Bryson
+    given: J. M.
+  container-title: Public Management Review
+  volume: 6
+  URL: 'http://doi.org/10.1080/14719030410001675722'
+  DOI: 10.1080/14719030410001675722
+  page: 21-53
+  type: article-journal
+  issued:
+    year: 2004
+
+vignette: >
+  %\VignetteIndexEntry{sustainas: sustainability analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## 1. Introduction {#intro}
+
+The [**sustainas**](https://cran.r-project.org/package=sustainas) package is designed to analyse a program sustainability. The features include: 
+
+* rapfish:
+    + [Rapfish calculation](#algor)
+    + [Rapfish plot](#plot)
+    + [Rapfish leverage](#leverage)
+    + [Rapfish simulation](#simulation)
+* sustainability livelihood analysis:
+    + [Livelihood vulnerability index](#lvi)
+    + [Sustainability radar plot](#radar)
+* Influence–interest stakeholder analysis:
+    + [Influence–interest plot](#iiplot)
+
+## 2. Rapid Appraisal for Fisheries (Rapfish)
+
+### 2.A. Algorithm and computation (`rapfish`) {#algor}
+
+The `rapfish` function can be applied to calculate sustainability coordinates of objects in two dimensional spaces @kavana. It applies classical multidimensional scalling by opting two dimensions. The function is applied in a simulated data set of `sociall` consisted of 12 objects with 8 variables.
+
+The `rapfish` computation result in a list of fish (object coordinates), s-stress (goodness of fit), variance explained in each dimension, good bad up down (gbud) anchor coordinates, all anchor coordinates, maximum, and minimum scores. Maximum and minimum scores for this vignette are set to be 10 and 0, respectively.
+
+```{r}
+library(sustainas)
+data("social")
+(res <- rapfish(social))
+```
+
+[(Back to Intoduction)](#intro)
+
+### 2.B. Plot (`rapplot`) {#plot}
+
+The `rapplot` draws the rapfish result in two dimensional graph. The first dimension is `X_score`, while the second is `Y_scores`. Variance explained and s stress are listed. The `title` argument can be supplied to indicate the title of the plot result.
+
+```{r, fig.width=7, fig.asp=0.8}
+rapplot(res, title = "social")
+```
+
+[(Back to Intoduction)](#intro)
+
+### 2.C. Leverage (`leverage`) {#leverage}
+
+The `leverage` plot the indicators when they are excluded. This plot can evaluate the indicator sensitivity. Not only a plot, but also variables scores are produced. 
+
+```{r, fig.width=7, fig.asp=0.8}
+levx <- leverage(social,res,title = "social")
+levx$data
+levx$plot
+```
+
+[(Back to Intoduction)](#intro)
+
+### 2.D. Simulation (`mc_triangular` and `mc_normal`) {#simulation}
+
+The `mc_triangular` and `mc_normal` generate simulated data based on the triangular and normal methods. These two function have similar arguments consisting of `n` generated data and the original data. The result is *n* times *number of objects* simulated data. This data can be summarized in a plot via `rapsummary` function. Five simulated data per object via triangular method can be generated and plotted.
+
+```{r, fig.width=7, fig.asp=0.8}
+set.seed(2025)
+simultri <- mc_triangular(10,social)
+tail(simultri)
+rapsummary(simultri, title = "social (triangular)")
+```
+
+Normal method can be also applied.
+
+```{r, fig.width=7, fig.asp=0.8}
+simulnormal <- mc_normal(10,social)
+rapsummary(simulnormal, title = "social (normal)",scatter=FALSE)
+```
+
+[(Back to Intoduction)](#intro)
+
+## 3. Sustainability Livelihood Analysis 
+
+Sustainability Livelihood Analysis (SLA) @hanh can be calculated either within a component or among components. The function `lvi` can produce SLA index for both two options. However, user must have prior-knowledge about the column id of each components.
+
+
+### 3.A. Livelihood vulnerability index (`lvi`) {#lvi}
+
+Data `social` is only a component so that livelihood vulnerability index (LVI) can be produced by giving `1` in the `sub.id` argument.
+
+```{r}
+lvi(social,sub.id = c(1),dim.name = "social")
+```
+
+However for the data `three` consisting of three components, user has to input three number of column id indicating the first column of each component. `three` simulated data set has social, institution, and technology dimensions. Social indicators are column number 1 to 8, institution variables are column number 9 to 15, and the rest are technology indicators.  
+
+```{r}
+data("three")
+lvi(three, sub.id = c(1,9,16),dim.name = c("Social","Institution","Technology"))
+```
+
+[(Back to Intoduction)](#intro)
+
+### 3.B. Sustainability radar plot (`radarplot`) {#radar}
+
+Function `radarplot`` shows the vulnerability score in each dimensions in a plot visualized as a radar form. 
+
+```{r, fig.width=7, fig.asp=0.8}
+#data simulation
+data("three")
+rest <- lvi(three, sub.id = c(1,9,16),dim.name = c("Social","Institution","Technology"))
+radarplot(rest,object = 5)
+```
+
+[(Back to Intoduction)](#intro)
+
+### 3.C. Influence Interest plot (`iiplot`) {#iiplot}
+
+Data `sldata` has two dimensions of influence and interest @bryson. The scores in the data can be plotted to identify stakeholders positions. 
+
+```{r, fig.width=7, fig.asp=0.8}
+#data simulation
+data("sldata")
+iiplot(sldata)
+```
+
+[(Back to Intoduction)](#intro)
+
+***
+
+# References {#ref}

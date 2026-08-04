@@ -1,0 +1,22 @@
+Package: sustainas
+Type: Package
+Title: Sustainability Analysis
+Version: 0.0.2
+Date: 2025-05-13
+Authors@R: person("Weksi","Budiaji", email = "budiaji@untirta.ac.id", role = c("aut","cre"))
+Description: There are some tools to measure a program sustainability. These include 
+  Rapid Appraisal for Fisheries (Rapfish) <http://doi.org/10.14288/1.0074801>  
+  and Sustainable Livelihood Analysis (SLA) <http://doi.org/10.1016/j.gloenvcha.2008.11.002>. 
+  This package is intended to calculate Rapfish and SLA in a simple way.
+  The validity measures are also included.
+Depends:
+    R (>= 3.5)
+License: GPL-3
+LazyData: TRUE
+Encoding: UTF-8
+RoxygenNote: 7.3.3
+Imports: 
+  ggplot2
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
