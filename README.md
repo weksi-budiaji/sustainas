@@ -48,7 +48,7 @@ The package is intended for researchers, practitioners, and decision-makers cond
 Install the released version from Github
 
 ```r
-install.packages("remote")
+install.packages("remotes")
 remotes::install_github("weksi-budiaji/sustainas")
 ```
 
