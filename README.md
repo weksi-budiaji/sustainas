@@ -153,7 +153,7 @@ citation("sustainas")
 
 ## License
 
-Released under the GPL (>= 2) license.
+Released under the GPL 3.0 license.
 
 ---
 
