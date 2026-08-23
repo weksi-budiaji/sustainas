@@ -49,7 +49,7 @@ Install the released version from Github
 
 ```r
 install.packages("remotes")
-remotes::install_github("weksi-budiaji/sustainas")
+remotes::install_github("weksi-budiaji/sustainas",build_vignettes = TRUE)
 ```
 
 Load the package
