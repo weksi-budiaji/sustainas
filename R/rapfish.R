@@ -6,11 +6,22 @@
 #' @param num_fish A number of fish (\emph{see} \strong{Details}).
 #' @param minim A minimum score (\emph{see} \strong{Details}).
 #' @param maxim A maximum score (\emph{see} \strong{Details}).
+#' @param standard A logical value for standard/ original (\emph{see} \strong{Details}).
+#' @param idcol A numeric (vector) for id column (\emph{see} \strong{Details}).
+#' @param idminim A numeric (vector) for minimum score (\emph{see} \strong{Details}).
+#' @param idmaxim A numeric (vector) for maximum score (\emph{see} \strong{Details}).
 #'
 #' @details The data set is a data frame. The columns indicate variables where
 #' the rows are the fish/ objects. \code{num_fish} indicates the number of
 #' fish/ objects. For \code{minim} and  \code{maxim} arguments, they have default
 #' values 0 and 10, respectively. A user can modify them.
+#'
+#' \code{standard} is a logical value with TRUE or FALSE where TRUE can be
+#' applied for heterogenous scales among variables. \code{idcol} indicates
+#' the column number of the heterogeneous scales. When heterogenous scales
+#' are applied, \code{idminim} and \code{idmaxim} indicate the minimum and
+#' maximum scores for the heterogenous scale, respectively. \code{idcol},
+#' \code{idminim} and \code{idmaxim} must have an identical length.
 #'
 #' @return Function returns a list with \emph{7} length indicates the
 #' fish/ object coordinates, stress value, variance explained per component,
@@ -37,7 +48,9 @@
 #'
 #' @export
 
-rapfish <- function(datrap, num_fish = 12,minim=0,maxim=10) {
+rapfish <- function(datrap, num_fish = 12,minim=0,maxim=10,
+                    standard = FALSE, idcol = NULL,
+                    idminim = NULL, idmaxim = NULL) {
 
   if(any(is.na(datrap))) stop("Cannot handle missing values!")
 
@@ -53,83 +66,45 @@ rapfish <- function(datrap, num_fish = 12,minim=0,maxim=10) {
     rownames(datrap) <- 1:n
 
   #anchor
-  ol <- matrix(minim,n_att,n_att)
-  ol[upper.tri(ol)] <- maxim
-  ba <- matrix(maxim,n_att,n_att)
-  ba[upper.tri(ba)] <- minim
-  anchor <- rbind(ba,ol)
-  n_an <- nrow(anchor)
-  rownames(anchor) <- paste(rep('A',n_att*2),1:(n_att*2),sep='')
+  if (standard) {
+    if (is.null(idcol)||is.null(idminim)||is.null(idmaxim)) stop("idcol,
+      idminim, and idmaxim must be supplied with numeric/ vector indicating
+      variable/ column of unequal scale!")
+    if (length(idcol) != length(idminim) || length(idcol) != length(idmaxim) ||
+        length(idminim) != length(idmaxim))
+      stop("The length of idcol, idminim, dan idmaxim has to be equal!")
 
-  #good bad up down
-  gbup <- matrix(minim,nrow = 4,ncol=n_att)
-  gbup[1,] <- maxim
-  gbup[2,] <- minim
-  gbup[3,1:ceiling(n_att/2)] <- maxim
-  gbup[4,-c(1:ceiling(n_att/2))] <- maxim
-  rownames(gbup) <- c('GOOD','BAD','UP','DOWN')
+    anchor <- create_anchors(n_att, 0, 1)
+    anchors <- anchor$anchors
 
-  #final anchor
-  anchors <- rbind(gbup, anchor)
+    colnames(anchors) <- colnames(datrap)
+    fisheries.dat <- datrap[1:num_fish,]
 
-  colnames(anchors) <- colnames(datrap)
-  fisheries.dat <- datrap[1:num_fish,]
-  fisheries.raw <- rbind(anchors,fisheries.dat)
+    # Standardisasi / min-max scaling
+    fisheries.std <- scale_data(fisheries.dat, n_att, idcol, minim, maxim,
+                                idminim, idmaxim)
 
-  #MDS and variance
+    fisheries.raw <- rbind(anchors,fisheries.std)
+  } else {
+
+    anchor <- create_anchors(n_att, minim, maxim)
+    anchors <- anchor$anchors
+
+    colnames(anchors) <- colnames(datrap)
+    fisheries.dat <- datrap[1:num_fish,]
+    fisheries.raw <- rbind(anchors,fisheries.dat)
+  }
+
+  # #MDS and variance
   disttbl <- dist(fisheries.raw,"euclidean",diag=TRUE,upper=TRUE)
   coords <- cmdscale(disttbl,k=2,eig = TRUE)
   GOF <- coords$GOF
   coords <- coords$points
 
-  ##topolar
-  if (coords['GOOD',1] < coords['BAD',1]) {
-    coords[,1] <- -coords[,1]  # flip horizontal
-  }
-  if (coords['UP',2] < coords['DOWN',2]) {
-    coords[,2] <- -coords[,2]  # flip vertical
-  }
-  x <- coords['GOOD',1]
-  y <-coords['GOOD',2]
-  radius <- sqrt(x^2 + y^2);
-  theta <- atan(y/x);
-  theta <- theta*(180/pi)
-  p1 <- c(radius,theta)
-  x1 <- coords['BAD',1]
-  y1 <- coords['BAD',2]
-  radius1 <-  sqrt(x1^2 + y1^2);
-  theta1 <- atan(y1/x1);
-  theta1 <- theta1*(180/pi)
-  p2 <- c(radius1,theta1)
-  ##
-  ##rotate
-  angle <- -( mean(c(p1[2],p2[2])))
-  theta2 <- angle* (pi/180)		# convert degrees to radians
-  x3 <- coords[,1]
-  y3 <- coords[,2]
-  x4 <- (x3*cos(theta2)) - (y3*sin(theta2))
-  y4 <- (x3*sin(theta2)) + (y3*cos(theta2))
-  coords1 <- matrix(c(x4,y4),,2)
-  rownames(coords1)= rownames(coords)
-  x.min <- min(coords1[,1])
-  x.max <- max(coords1[,1])
-  y.min <- min(coords1[,2])
-  y.max <- max(coords1[,2])
-
-  #fix X and Y
-  sc_x <- 100/(x.max-x.min)
-  X_scores <- coords1[,1]*sc_x
-  ad_x <- abs(X_scores[2])
-  X_scores <- X_scores+ad_x
-
-  sc_y <- 100/(y.max-y.min)
-  Y_scores <- coords1[,2]*sc_y
-  #ad_y=abs(Y_scores[2])
-  #Y_scores=Y_scores+ad_y
-
-  coords2 <- cbind(X_scores,Y_scores)
+  coords2 <- transform_mds(coords)
 
   #Stress (modified)
+  n_an <- anchor$n_an
   matS <- as.matrix(disttbl)[(n_an+5):nrow(coords2),(n_an+5):nrow(coords2)]
   matD <- as.matrix(dist(coords[(n_an+5):nrow(coords2),]))
   matE <- abs(matS-matD)
@@ -142,4 +117,3 @@ rapfish <- function(datrap, num_fish = 12,minim=0,maxim=10) {
                  maxim = maxim, minim = minim)
 
 }
-

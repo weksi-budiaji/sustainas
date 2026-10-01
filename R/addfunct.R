@@ -1,4 +1,86 @@
 
+create_anchors <- function(n_cols, min_val, max_val) {
+
+  #anchor
+  ol <- matrix(min_val,n_cols,n_cols)
+  ol[upper.tri(ol)] <- max_val
+  ba <- matrix(max_val,n_cols,n_cols)
+  ba[upper.tri(ba)] <- min_val
+  anchor <- rbind(ba,ol)
+  n_an <- nrow(anchor)
+  rownames(anchor) <- paste(rep('A',n_cols*2),1:(n_cols*2),sep='')
+
+  #good bad up down
+  gbup <- matrix(min_val,nrow = 4,ncol=n_cols)
+  gbup[1,] <- max_val
+  gbup[2,] <- min_val
+  gbup[3,1:ceiling(n_cols/2)] <- max_val
+  gbup[4,-c(1:ceiling(n_cols/2))] <- max_val
+  rownames(gbup) <- c('GOOD','BAD','UP','DOWN')
+
+  #final anchor
+  anchors <- rbind(gbup, anchor)
+
+  return(list(anchors = anchors, n_an = n_an))
+}
+
+transform_mds <- function(coords) {
+
+  # Flip horizontal/vertical
+  if (coords['GOOD', 1] < coords['BAD', 1]) {
+    coords[, 1] <- -coords[, 1]
+  }
+  if (coords['UP', 2] < coords['DOWN', 2]) {
+    coords[, 2] <- -coords[, 2]
+  }
+
+  # Rotation angle
+  p1_theta <- atan(coords['GOOD', 2] / coords['GOOD', 1]) * (180 / pi)
+  p2_theta <- atan(coords['BAD', 2] / coords['BAD', 1]) * (180 / pi)
+  angle_rad <- -(mean(c(p1_theta, p2_theta))) * (pi / 180)
+
+  # coordinates rotation
+  x3 <- coords[, 1]
+  y3 <- coords[, 2]
+  x4 <- (x3 * cos(angle_rad)) - (y3 * sin(angle_rad))
+  y4 <- (x3 * sin(angle_rad)) + (y3 * cos(angle_rad))
+  coords1 <- matrix(c(x4, y4), ncol = 2)
+  rownames(coords1) <- rownames(coords)
+
+  # Scale to 0 - 100
+  x_min <- min(coords1[, 1])
+  x_max <- max(coords1[, 1])
+  y_min <- min(coords1[, 2])
+  y_max <- max(coords1[, 2])
+
+  sc_x <- 100 / (x_max - x_min)
+  X_scores <- coords1[, 1] * sc_x
+  X_scores <- X_scores + abs(X_scores[2])
+
+  sc_y <- 100 / (y_max - y_min)
+  Y_scores <- coords1[, 2] * sc_y
+
+  coords2 <- cbind(X_scores, Y_scores)
+
+  return(coords2)
+}
+
+scale_data <- function(dat, n_col, col_indices, minim, maxim,
+                       idminim, idmaxim) {
+
+  origin <- setdiff(1:n_col, col_indices)
+  df_std <- dat
+
+  for (idx in origin) {
+    df_std[, idx] <- (dat[, idx] - minim) / (maxim - minim)
+  }
+  for (i in seq_along(col_indices)) {
+    df_std[, col_indices[i]] <- (dat[, col_indices[i]] - idminim[i]) /
+      (idmaxim[i] - idminim[i])
+  }
+  return(df_std)
+}
+
 triangular <- function(n=10,minim=0,maxim=10,lk=5) {
   if((lk<minim)||(lk>maxim)) {
     stop("Likelihood value outside of range [minimum maximum]")

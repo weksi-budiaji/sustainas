@@ -4,7 +4,16 @@
 \alias{rapfish}
 \title{Rapfish calculation}
 \usage{
-rapfish(datrap, num_fish = 12, minim = 0, maxim = 10)
+rapfish(
+  datrap,
+  num_fish = 12,
+  minim = 0,
+  maxim = 10,
+  standard = FALSE,
+  idcol = NULL,
+  idminim = NULL,
+  idmaxim = NULL
+)
 }
 \arguments{
 \item{datrap}{An input of data set (\emph{see} \strong{Details}).}
@@ -14,6 +23,14 @@ rapfish(datrap, num_fish = 12, minim = 0, maxim = 10)
 \item{minim}{A minimum score (\emph{see} \strong{Details}).}
 
 \item{maxim}{A maximum score (\emph{see} \strong{Details}).}
+
+\item{standard}{A logical value for standard/ original (\emph{see} \strong{Details}).}
+
+\item{idcol}{A numeric (vector) for id column (\emph{see} \strong{Details}).}
+
+\item{idminim}{A numeric (vector) for minimum score (\emph{see} \strong{Details}).}
+
+\item{idmaxim}{A numeric (vector) for maximum score (\emph{see} \strong{Details}).}
 }
 \value{
 Function returns a list with \emph{7} length indicates the
@@ -28,6 +45,13 @@ The data set is a data frame. The columns indicate variables where
 the rows are the fish/ objects. \code{num_fish} indicates the number of
 fish/ objects. For \code{minim} and  \code{maxim} arguments, they have default
 values 0 and 10, respectively. A user can modify them.
+
+\code{standard} is a logical value with TRUE or FALSE where TRUE can be
+applied for heterogenous scales among variables. \code{idcol} indicates
+the column number of the heterogeneous scales. When heterogenous scales
+are applied, \code{idminim} and \code{idmaxim} indicate the minimum and
+maximum scores for the heterogenous scale, respectively. \code{idcol},
+\code{idminim} and \code{idmaxim} must have an identical length.
 }
 \examples{
 #data simulation
