@@ -74,9 +74,7 @@ scale_data <- function(dat, n_col, col_indices, minim, maxim,
     origin <- setdiff(1:n_col, col_indices)
     if(length(origin)!=0) stop("It standardize all column, make sure length of n_col and col_indices are equal")
 
-    df_std <- apply(df_std, 2, function(x) {
-      (x - min(x)) / (max(x) - min(x))
-    })
+    df_std <- apply(df_std, 2, composit)
 
   } else {
     origin <- setdiff(1:n_col, col_indices)
