@@ -66,17 +66,27 @@ transform_mds <- function(coords) {
 }
 
 scale_data <- function(dat, n_col, col_indices, minim, maxim,
-                       idminim, idmaxim) {
+                       idminim, idmaxim, all = FALSE) {
 
-  origin <- setdiff(1:n_col, col_indices)
   df_std <- dat
 
-  for (idx in origin) {
-    df_std[, idx] <- (dat[, idx] - minim) / (maxim - minim)
-  }
-  for (i in seq_along(col_indices)) {
-    df_std[, col_indices[i]] <- (dat[, col_indices[i]] - idminim[i]) /
-      (idmaxim[i] - idminim[i])
+  if (all) {
+    origin <- setdiff(1:n_col, col_indices)
+    if(length(origin)!=0) stop("It standardize all column, make sure length of n_col and col_indices are equal")
+
+    df_std <- apply(df_std, 2, function(x) {
+      (x - min(x)) / (max(x) - min(x))
+    })
+
+  } else {
+    origin <- setdiff(1:n_col, col_indices)
+    for (idx in origin) {
+      df_std[, idx] <- (dat[, idx] - minim) / (maxim - minim)
+    }
+    for (i in seq_along(col_indices)) {
+      df_std[, col_indices[i]] <- (dat[, col_indices[i]] - idminim[i]) /
+        (idmaxim[i] - idminim[i])
+    }
   }
   return(df_std)
 }
