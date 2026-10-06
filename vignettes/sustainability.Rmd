@@ -164,7 +164,7 @@ Function `radarplot`` shows the vulnerability score in each dimensions in a plot
 #data simulation
 data("three")
 rest <- lvi(three, sub.id = c(1,9,16),dim.name = c("Social","Institution","Technology"))
-radarplot(rest,object = 5)
+radarplot(rest, lvi.out=TRUE, object = 5)
 ```
 
 [(Back to Intoduction)](#intro)

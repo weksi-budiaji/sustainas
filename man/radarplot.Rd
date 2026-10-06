@@ -4,7 +4,7 @@
 \alias{radarplot}
 \title{Radar plot of sustainability livelihood analysis}
 \usage{
-radarplot(dat, title = "", lvi.out = TRUE, object = NULL)
+radarplot(dat, title = "", lvi.out = FALSE, rapfish.out = FALSE, object = NULL)
 }
 \arguments{
 \item{dat}{An input of data set (\emph{see} \strong{Details}).}
@@ -12,6 +12,8 @@ radarplot(dat, title = "", lvi.out = TRUE, object = NULL)
 \item{title}{A title for the plot (\emph{see} \strong{Details}).}
 
 \item{lvi.out}{An indicator whether the input data from lvi function (\emph{see} \strong{Details}).}
+
+\item{rapfish.out}{An indicator whether the input data from rapfish function (\emph{see} \strong{Details}).}
 
 \item{object}{A numeric input for the object id (\emph{see} \strong{Details}).}
 }
@@ -34,13 +36,13 @@ It is valid only \code{lvi.out = TRUE}.
 #data simulation
 data("three")
 rest <- lvi(three, sub.id = c(1,9,16),dim.name = c("Social","Institution","Technology"))
-radarplot(rest,object = 5)
+radarplot(rest,lvi.out=TRUE,object = 5)
 
 #non lvi output
 datex <- data.frame(
 dimension = c("Social", "Institution","Technology"),
 score = c(5,7,9))
-radarplot(datex,lvi.out = FALSE)
+radarplot(datex,lvi.out = FALSE,rapfish.out=FALSE)
 
 }
 \author{
