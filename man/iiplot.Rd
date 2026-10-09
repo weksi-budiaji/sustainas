@@ -8,10 +8,14 @@ iiplot(
   dat,
   sub.id = c(1, 6),
   title = "",
-  min.influ = 0,
+  min.influ = 1,
   max.influ = 5,
-  min.inter = 0,
-  max.inter = 5
+  min.inter = 1,
+  max.inter = 5,
+  standard = FALSE,
+  idcol = NULL,
+  idminim = NULL,
+  idmaxim = NULL
 )
 }
 \arguments{
@@ -28,6 +32,14 @@ iiplot(
 \item{min.inter}{A minimum score of interest (\emph{see} \strong{Details}).}
 
 \item{max.inter}{A maximum score of interest (\emph{see} \strong{Details}).}
+
+\item{standard}{A logical value for standard/ original (\emph{see} \strong{Details}).}
+
+\item{idcol}{A numeric (vectors) for id column (\emph{see} \strong{Details}).}
+
+\item{idminim}{A numeric (vectors) for minimum score (\emph{see} \strong{Details}).}
+
+\item{idmaxim}{A numeric (vectors) for maximum score (\emph{see} \strong{Details}).}
 }
 \value{
 Function returns a list of coordinate scores and

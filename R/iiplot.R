@@ -10,6 +10,10 @@
 #' @param max.influ A maximum score of influence (\emph{see} \strong{Details}).
 #' @param min.inter A minimum score of interest (\emph{see} \strong{Details}).
 #' @param max.inter A maximum score of interest (\emph{see} \strong{Details}).
+#' @param standard A logical value for standard/ original (\emph{see} \strong{Details}).
+#' @param idcol A numeric (vectors) for id column (\emph{see} \strong{Details}).
+#' @param idminim A numeric (vectors) for minimum score (\emph{see} \strong{Details}).
+#' @param idmaxim A numeric (vectors) for maximum score (\emph{see} \strong{Details}).
 #'
 #' @details The data set is a n x c data frame or matrix object. The influence-interest
 #' plot draws only two dimensions of influence (x) and interest (y).
@@ -38,8 +42,10 @@
 #'
 #' @export
 
-iiplot <- function(dat,sub.id = c(1, 6), title = "", min.influ=0, max.influ=5,
-                   min.inter=0, max.inter=5) {
+iiplot <- function(dat,sub.id = c(1, 6), title = "", min.influ=1,
+                   max.influ=5, min.inter=1, max.inter=5,
+                   standard = FALSE, idcol = NULL,
+                   idminim = NULL, idmaxim = NULL) {
 
   if(any(is.na(dat))) stop("Cannot handle missing values!")
   if(length(sub.id)!=2) stop("Only handle two dimension of Influence and Interest!")
@@ -52,6 +58,55 @@ iiplot <- function(dat,sub.id = c(1, 6), title = "", min.influ=0, max.influ=5,
   xy <- matrix(0,n.obj,2)
   rownames(xy) <- rownames(dat)
   colnames(xy) <- c("Influence","Interest")
+
+  if (standard) {
+    if (is.null(idcol)||is.null(idminim)||is.null(idmaxim)) stop("idcol,
+      idminim, and idmaxim must be supplied with numeric/ vector indicating
+      variable/ column of unequal scale!")
+    if (length(idcol) != length(idminim) || length(idcol) != length(idmaxim) ||
+        length(idminim) != length(idmaxim))
+      stop("The length of idcol, idminim, dan idmaxim has to be equal!")
+
+    #influence data
+    dat_influ <- dat[,c(sub.id[1]:(idx[1]-1))]
+    n_col_influ <- idx[1]-sub.id[1]
+    idcol_influ <- idcol[idcol<sub.id[2]]
+    length_id_influ <- length(idcol_influ)
+    if (length(idcol_influ==0)) {
+      dat_influ <- scale_data(dat_influ, n_col_influ, 1:n_col_influ,
+                              min.influ, max.influ,
+                              min.influ, max.influ, all = TRUE)
+    } else {
+      idminim_influ <- idminim[1:length_id_influ]
+      idmaxim_influ <- idmaxim[1:length_id_influ]
+      dat_influ <- scale_data(dat_influ, n_col_influ, idcol_influ,
+                              min.influ, max.influ,
+                              min.influ, max.influ)
+    }
+
+
+    #interest data
+    dat_inter <- dat[,c(sub.id[2]:(idx[2]-1))]
+    n_col_inter <- idx[2]-sub.id[2]
+    idcol_inter <- idcol[idcol>=sub.id[2]]-(sub.id[2]-1)
+
+    if (length(idcol_inter==0)) {
+      dat_inter <- scale_data(dat_inter, n_col_inter, 1:n_col_inter,
+                              min.inter, max.inter,
+                              min.inter, max.inter, all = TRUE)
+    } else {
+      idminim_inter <- idminim[-c(1:length_id_influ)]
+      idmaxim_inter <- idmaxim[-c(1:length_id_influ)]
+      dat_inter <- scale_data(dat_inter, n_col_inter, idcol_inter,
+                              min.inter, max.inter,
+                              idminim_inter, idmaxim_inter)
+    }
+
+    dat <- cbind(dat_influ,dat_inter)
+    min.influ <- min.inter <- 0
+    max.influ <- max.inter  <- 1
+  }
+
   for (i in 1:n.comp) {
     mat <- dat[,c(sub.id[i]:(idx[i]-1))]
     xy[,i] <- apply(mat,1,sum)
@@ -81,7 +136,6 @@ iiplot <- function(dat,sub.id = c(1, 6), title = "", min.influ=0, max.influ=5,
           axis.text.y = element_text(size = 10, face = "bold", color = "black"),
           axis.title.x = element_text(size = 14, face = "bold", color = "black"),
           axis.title.y = element_text(size = 14, face = "bold", color = "black")
-          )
+    )
   return(list(data=xy, plot=plot))
 }
-
