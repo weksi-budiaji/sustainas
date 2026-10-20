@@ -2,7 +2,7 @@
 % Please edit documentation in R/radarplot.R
 \name{radarplot}
 \alias{radarplot}
-\title{Radar plot of sustainability livelihood analysis}
+\title{Radar plot of sustainability analysis}
 \usage{
 radarplot(dat, title = "", lvi.out = FALSE, rapfish.out = FALSE, object = NULL)
 }
@@ -21,12 +21,13 @@ radarplot(dat, title = "", lvi.out = FALSE, rapfish.out = FALSE, object = NULL)
 Function returns a radar plot indicating the vulnerability score.
 }
 \description{
-This function plot the sustainability livelihood in radar
+This function plot the sustainability in radar
 plot depending on the included number of dimensions.
 }
 \details{
 The data set is a n x 2 data frame or matrix object. The sustainability
-livelihood radar plot draws all included dimensions.
+radar plot draws all included dimensions. If the input is rapfish output,
+it must be from rapfish2 function (multidimensional RAPFISH).
 For \code{title}, user can input additional information for the plot title.
 For \code{lvi.out} is indicator input whether \code{TRUE} or
 \code{FALSE} while \code{object} must be a numeric with a length of 1.
