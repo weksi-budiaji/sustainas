@@ -1,6 +1,6 @@
-#' Radar plot of sustainability livelihood analysis
+#' Radar plot of sustainability analysis
 #'
-#' @description This function plot the sustainability livelihood in radar
+#' @description This function plot the sustainability in radar
 #' plot depending on the included number of dimensions.
 #'
 #' @param dat An input of data set (\emph{see} \strong{Details}).
@@ -10,7 +10,8 @@
 #' @param object A numeric input for the object id (\emph{see} \strong{Details}).
 #'
 #' @details The data set is a n x 2 data frame or matrix object. The sustainability
-#' livelihood radar plot draws all included dimensions.
+#' radar plot draws all included dimensions. If the input is rapfish output,
+#' it must be from rapfish2 function (multidimensional RAPFISH).
 #' For \code{title}, user can input additional information for the plot title.
 #' For \code{lvi.out} is indicator input whether \code{TRUE} or
 #' \code{FALSE} while \code{object} must be a numeric with a length of 1.
@@ -61,6 +62,8 @@ radarplot <- function(dat, title="",lvi.out=FALSE,
   }
 
   if (lvi.out==FALSE && rapfish.out == TRUE) {
+    if(is.null(dat$idxdim))
+      stop("The rapfish output must be a multidimensional rapfish!")
     dt <- as.data.frame(dat$idxdim[,c("dimension",as.character(object))])
     dt$dimension <- as.character(dt$dimension)
     colnames(dt)[2] <- "score"
