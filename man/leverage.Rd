@@ -4,7 +4,18 @@
 \alias{leverage}
 \title{Leverage plot}
 \usage{
-leverage(datori, datres, title = "", minim = 0, maxim = 10, zoom.in = TRUE)
+leverage(
+  datori,
+  datres,
+  title = "",
+  minim = 0,
+  maxim = 10,
+  standard = FALSE,
+  idcol = NULL,
+  idminim = NULL,
+  idmaxim = NULL,
+  zoom.in = TRUE
+)
 }
 \arguments{
 \item{datori}{An input of data set (\emph{see} \strong{Details}).}
@@ -16,6 +27,14 @@ leverage(datori, datres, title = "", minim = 0, maxim = 10, zoom.in = TRUE)
 \item{minim}{A minimum score (\emph{see} \strong{Details}).}
 
 \item{maxim}{A maximum score (\emph{see} \strong{Details}).}
+
+\item{standard}{A logical value for standard/ original (\emph{see} \strong{Details}).}
+
+\item{idcol}{A numeric (vector) for id column (\emph{see} \strong{Details}).}
+
+\item{idminim}{A numeric (vector) for minimum score (\emph{see} \strong{Details}).}
+
+\item{idmaxim}{A numeric (vector) for maximum score (\emph{see} \strong{Details}).}
 
 \item{zoom.in}{A logical input for a zoom in leverage plot.}
 }

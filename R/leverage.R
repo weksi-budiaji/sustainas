@@ -7,6 +7,11 @@
 #' @param title A title for the plot.
 #' @param minim A minimum score (\emph{see} \strong{Details}).
 #' @param maxim A maximum score (\emph{see} \strong{Details}).
+#' @param standard A logical value for standard/ original (\emph{see} \strong{Details}).
+#' @param idcol A numeric (vector) for id column (\emph{see} \strong{Details}).
+#' @param idminim A numeric (vector) for minimum score (\emph{see} \strong{Details}).
+#' @param idmaxim A numeric (vector) for maximum score (\emph{see} \strong{Details}).
+#'
 #' @param zoom.in A logical input for a zoom in leverage plot.
 #'
 #' @details \code{datori} is the original data set, while
@@ -36,7 +41,9 @@
 
 
 leverage <- function(datori,datres,title='',
-                     minim=0, maxim=10, zoom.in = TRUE){
+                      minim=0, maxim=10, standard = FALSE,
+                      idcol = NULL, idminim = NULL, idmaxim = NULL,
+                      zoom.in = TRUE){
 
   n_att <- ncol(datori)
   num_fish <- nrow(datres$fish)
@@ -44,45 +51,79 @@ leverage <- function(datori,datres,title='',
   yval <- datres$fish[,2]
   lev <- matrix(0,nrow=n_att,ncol=2)
   colnames(lev) <- c("X_scores","Y_scores")
-  for (i in 1:n_att){
-    fish_lv <- datori[,-i]
-    fish_lv.scaled <- rapfish(fish_lv, num_fish = num_fish, minim = minim,
-                              maxim = maxim)
-    lv_x <- fish_lv.scaled$fish[,1]
-    lv_y <- fish_lv.scaled$fish[,2]
-    sumsqx <- sum((lv_x-xval)^2)
-    sumsqy <- sum((lv_y-yval)^2)
-    lev[i,1] <- sqrt(sumsqx/num_fish)
-    lev[i,2] <- sqrt(sumsqy/num_fish)
-  }
-  lev[lev > maxim] <- maxim
-  levdf <- data.frame(score = apply(lev,1,mean),
-                      Indicator = colnames(datori)
-  )
 
-  if (zoom.in==TRUE){
-    maxim <- ceiling(max(levdf$score))
+  if (standard) {
+    if (is.null(idcol)||is.null(idminim)||is.null(idmaxim)) stop("idcol,
+      idminim, and idmaxim must be supplied with numeric/ vector indicating
+      variable/ column of unequal scale!")
+    if (length(idcol) != length(idminim) || length(idcol) != length(idmaxim) ||
+        length(idminim) != length(idmaxim))
+      stop("The length of idcol, idminim, dan idmaxim has to be equal!")
+    for (i in 1:n_att){
+      fish_lv <- datori[,-i]
+      fish_lv.scaled <- rapfish(fish_lv, num_fish = num_fish, minim = minim,
+                                maxim = maxim, standard = TRUE,
+                                idcol = idcol, idminim = idminim,
+                                idmaxim = idmaxim)
+      lv_x <- fish_lv.scaled$fish[,1]
+      lv_y <- fish_lv.scaled$fish[,2]
+      sumsqx <- sum((lv_x-xval)^2)
+      sumsqy <- sum((lv_y-yval)^2)
+      lev[i,1] <- sqrt(sumsqx/num_fish)
+      lev[i,2] <- sqrt(sumsqy/num_fish)
+    }
+    levdf <- data.frame(score = apply(lev,1,mean),
+                        Indicator = colnames(datori)
+    )
+    levdf$score <- levdf$score/ sum(levdf$score)
+    minim <- 0
+    if (zoom.in==TRUE){
+      maxim <- max(levdf$score)
+    } else {
+      maxim <- 1
+    }
+    sub <- "Proportion of RMS score change when selected attribute removed"
   } else {
-    maxim <- maxim
+    for (i in 1:n_att){
+      fish_lv <- datori[,-i]
+      fish_lv.scaled <- rapfish(fish_lv, num_fish = num_fish, minim = minim,
+                                maxim = maxim)
+      lv_x <- fish_lv.scaled$fish[,1]
+      lv_y <- fish_lv.scaled$fish[,2]
+      sumsqx <- sum((lv_x-xval)^2)
+      sumsqy <- sum((lv_y-yval)^2)
+      lev[i,1] <- sqrt(sumsqx/num_fish)
+      lev[i,2] <- sqrt(sumsqy/num_fish)
+    }
+    lev[lev > maxim] <- maxim
+    levdf <- data.frame(score = apply(lev,1,mean),
+                        Indicator = colnames(datori)
+    )
+    if (zoom.in==TRUE){
+      maxim <- ceiling(max(levdf$score))
+    } else {
+      maxim <- maxim
+    }
+    sub <- "RMS score change when selected attribute removed"
   }
 
   plotbar <- ggplot(data=levdf, aes(x=.data$score, y=reorder(.data$Indicator,.data$score))) +
-      geom_bar(stat="identity", fill="steelblue") +
-      ggtitle(title) +
-      coord_cartesian(xlim = c(minim, maxim)) +
-      #scale_x_continuous(limits = c(minim,maxim)) +
-      ylab("Indicator") +
-      theme_bw() +
-      theme(plot.title=element_text(hjust=0.5),
-            axis.text.x = element_text(size = 10, face = "bold", color = "black"),
-            axis.text.y = element_text(size = 10, face = "bold", color = "black"),
-            axis.title.x = element_text(size = 12, face = "bold", color = "black"),
-            axis.title.y = element_text(size = 12, face = "bold", color = "black"),
-            panel.border = element_blank(),
-            axis.line = element_line(color = "black", linewidth = 0.8),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            plot.subtitle=element_text(size=12)) +
-      labs(subtitle = "RMS score change when selected attribute removed")
+    geom_bar(stat="identity", fill="steelblue") +
+    ggtitle(title) +
+    coord_cartesian(xlim = c(minim, maxim)) +
+    #scale_x_continuous(limits = c(minim,maxim)) +
+    ylab("Indicator") +
+    theme_bw() +
+    theme(plot.title=element_text(hjust=0.5),
+          axis.text.x = element_text(size = 10, face = "bold", color = "black"),
+          axis.text.y = element_text(size = 10, face = "bold", color = "black"),
+          axis.title.x = element_text(size = 12, face = "bold", color = "black"),
+          axis.title.y = element_text(size = 12, face = "bold", color = "black"),
+          panel.border = element_blank(),
+          axis.line = element_line(color = "black", linewidth = 0.8),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          plot.subtitle=element_text(size=12)) +
+    labs(subtitle = sub)
   return(list(data=levdf, plot = plotbar))
 }
