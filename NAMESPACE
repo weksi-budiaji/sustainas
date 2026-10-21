@@ -2,6 +2,7 @@
 
 export(iiplot)
 export(leverage)
+export(leverage2)
 export(lvi)
 export(mc_normal)
 export(mc_triangular)

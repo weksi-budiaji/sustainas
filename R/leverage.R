@@ -11,7 +11,6 @@
 #' @param idcol A numeric (vector) for id column (\emph{see} \strong{Details}).
 #' @param idminim A numeric (vector) for minimum score (\emph{see} \strong{Details}).
 #' @param idmaxim A numeric (vector) for maximum score (\emph{see} \strong{Details}).
-#'
 #' @param zoom.in A logical input for a zoom in leverage plot.
 #'
 #' @details \code{datori} is the original data set, while
