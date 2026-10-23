@@ -83,6 +83,6 @@ mc_ii <- function(n = 100, dat, sub.id = c(1, 6),
     mean_influ = apply(sim_influ, 2, mean),
     mean_inter = apply(sim_inter, 2, mean),
     raw_influ = sim_influ,
-    raw_inter = sim_inter,
+    raw_inter = sim_inter
   ))
 }
