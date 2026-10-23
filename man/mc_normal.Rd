@@ -2,9 +2,9 @@
 % Please edit documentation in R/mcnormal.R
 \name{mc_normal}
 \alias{mc_normal}
-\title{Montecarlo normal method}
+\title{Montecarlo normal method for RAPFISH}
 \usage{
-mc_normal(n = 10, dat, minim = 0, maxim = 10)
+mc_normal(n = 10, dat, minim = 0, maxim = 10, sd = 1)
 }
 \arguments{
 \item{n}{A number of data simulation (\emph{see} \strong{Details}).}
@@ -14,6 +14,8 @@ mc_normal(n = 10, dat, minim = 0, maxim = 10)
 \item{minim}{A minimum score (\emph{see} \strong{Details}).}
 
 \item{maxim}{A maximum score (\emph{see} \strong{Details}).}
+
+\item{sd}{A standard deviation for the normal distribution (\emph{see} \strong{Details}).}
 }
 \value{
 Function returns coordinates of Montecarlo simulation.
@@ -22,13 +24,12 @@ Function returns coordinates of Montecarlo simulation.
 This function generate montecarlo simulation with normal method.
 }
 \details{
-Because the normal method applying box-mueller transformation
-\code{n} will be always converted to even number even it the input is an
-odd number.
+\code{n} is a number of the data simulation.
 The data set \code{dat} arguments is a data set as a source
 data for the simulation.
 For \code{maxim} and  \code{minim} arguments, they have default
 values 10 and 0, respectively. A user can modify them.
+\code{sd} set the dispersion tendency of the simulation.
 }
 \examples{
 #data simulation
