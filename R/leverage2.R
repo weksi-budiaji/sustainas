@@ -116,8 +116,10 @@ leverage2 <- function (datori, datres, title = "", minim = 1, maxim = 5,
       idxstart <- iddim[j]
       idxend <- lastind[j]
       iddim2 <- c(iddim[1:j],iddim[-c(1:j)]-1) #index dimension
+
       for (i in idxstart:idxend) {
-        fish_lv <- datori[, -i]
+        #iddim2 <- iddim - (iddim > i)
+        fish_lv <- datori[, -i, drop = FALSE]
         fish_lv.scaled <- rapfish2(fish_lv, num_fish = num_fish,
                                    minim = minim, maxim = maxim,
                                    iddim = iddim2)
