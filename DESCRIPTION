@@ -1,14 +1,13 @@
 Package: sustainas
 Type: Package
-Title: Sustainability Analysis for RAPFISH, LVI, and Influence-Interest
-Version: 0.0.2
-Date: 2025-05-13
+Title: Sustainability Analysis for Rapid Appraisal for Fisheries ('RAPFISH'), Sustainable Livelihood Analysis, and Influence-Interest
+Version: 0.1.1
+Date: 2026-10-30
 Authors@R: person("Weksi","Budiaji", email = "budiaji@untirta.ac.id", role = c("aut","cre"))
 Description: There are some tools to measure a program sustainability. These include 
-  Rapid Appraisal for Fisheries (Rapfish) <http://doi.org/10.14288/1.0074801>,  
-  Sustainable Livelihood Analysis (SLA) <http://doi.org/10.1016/j.gloenvcha.2008.11.002>,
-  and Stakeholder Influence-Interest <http://doi.org/10.1080/14719030410001675722>. 
-  This package is intended to calculate Rapfish and SLA in a simple way.
+  Rapid Appraisal for Fisheries <doi:10.14288/1.0074801>,  
+  Sustainable Livelihood Analysis <doi:10.1016/j.gloenvcha.2008.11.002>,
+  and Stakeholder Influence-Interest <doi:10.1080/14719030410001675722>. 
   The validity measures and uncertainty analysis are also included.
 Depends:
     R (>= 3.5)
