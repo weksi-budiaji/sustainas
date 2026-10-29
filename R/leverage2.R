@@ -1,4 +1,4 @@
-#' Leverage plot
+#' Leverage plot for multi-dimensional RAPFISH
 #'
 #' @description This function plot the leverage of Rapfish
 #'
@@ -19,6 +19,15 @@
 #' For \code{minim} and  \code{maxim} arguments, they have default
 #' values 0 and 10, respectively. A user can modify them.
 #'
+#' \code{iddim} is a numeric vector to indicate the first column index of each
+#' dimension.
+#' \code{standard} is a logical value with TRUE or FALSE where TRUE can be
+#' applied for heterogenous scales among variables. \code{idcol} indicates
+#' the column number of the heterogeneous scales. When heterogenous scales
+#' are applied, \code{idminim} and \code{idmaxim} indicate the minimum and
+#' maximum scores for the heterogenous scale, respectively. \code{idcol},
+#' \code{idminim} and \code{idmaxim} must have an identical length.
+#'
 #' @return Function returns list of leverage scores and
 #' a plot of leverage.
 #'
@@ -33,9 +42,9 @@
 #'
 #' @examples
 #' #data simulation
-#' data("social")
-#' res <- rapfish(social)
-#' leverage(social,res,title = "social")
+#' data("RapEqualScale15n10")
+#' rest <- rapfish2(RapEqualScale15n10,num_fish = 10,minim=1,maxim=5,iddim = c(1,7,13,19,25))
+#' leverage2(RapEqualScale15n10,rest,iddim =c(1,7,13,19,25))
 #'
 #' @export
 

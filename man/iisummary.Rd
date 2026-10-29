@@ -45,6 +45,12 @@ values 10 and 0, respectively. A user can modify them.
 }
 \examples{
 #data simulation
+data("sldata")
+iiplot(sldata)
+hasil_mc_ii <- mc_ii(n = 100, dat = sldata, sub.id = c(1, 6),
+min.influ = 1, max.influ = 5, min.inter = 1, max.inter = 5, sd = 0.5)
+iisummary(hasil_mc_ii,sub.id = c(1, 6),  min.influ = 1, max.influ = 5,
+min.inter = 1, max.inter = 5, tot.id = 10)
 
 }
 \references{

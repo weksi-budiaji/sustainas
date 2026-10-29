@@ -87,7 +87,7 @@ rapplot(res)
 leverage(social, res)
 
 # Monte Carlo simulation
-sim <- mc_triangular(10, social)
+sim <- mc_normal(10, social)
 rapsummary(sim)
 
 # Livelihood Vulnerability Index
@@ -116,7 +116,6 @@ iiplot(sldata)
 | `rapfish()` | RAPFISH sustainability analysis |
 | `rapplot()` | RAPFISH ordination plot |
 | `leverage()` | RAPFISH leverage analysis |
-| `mc_triangular()` | Monte Carlo simulation (triangular distribution) |
 | `mc_normal()` | Monte Carlo simulation (normal distribution) |
 | `rapsummary()` | Monte Carlo summary plots |
 | `lvi()` | Livelihood Vulnerability Index |

@@ -38,13 +38,21 @@ This function generate montecarlo simulation with normal method.
 \details{
 \code{n} is a number of the data simulation.
 The data set \code{dat} arguments is a data set as a source
-data for the simulation.
+data for the simulation. \code{sub.id} indicates the column id of the first variable for
+each sub-component. \code{dim.name} is the name for the dimensions.
 For \code{maxim} and  \code{minim} arguments, they have default
 values 10 and 0, respectively. A user can modify them.
 \code{sd} set the dispersion tendency of the simulation.
 }
 \examples{
 #data simulation
+data("social")
+lvi(social,sub.id = c(1),dim.name = c("Social"))
+lvi(three, sub.id = c(1,9,16),dim.name = c("Social","Institution","Technology"))
+hasil_mc <- mc_lvi(n = 100, three, sub.id =  c(1,9,16),
+dim.name = c('Social','Institution','Technology'),
+minim = 0, maxim = 10, sd=1)
+hasil_mc$mean
 
 }
 \references{

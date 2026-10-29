@@ -22,9 +22,7 @@
 #' @examples
 #' #data simulation
 #' data("social")
-#' b1 <- mc_triangular(10,social)
 #' b2 <- mc_normal(10,social)
-#' rapsummary(b1)
 #' rapsummary(b2)
 #'
 #' @export

@@ -23,6 +23,13 @@
 #' Minimum and maximum scores for each dimension are also defined in the
 #' \code{min.influ}, \code{max.influ}, \code{min.inter}, and \code{max.inter}.
 #'
+#' \code{standard} is a logical value with TRUE or FALSE where TRUE can be
+#' applied for heterogenous scales among variables. \code{idcol} indicates
+#' the column number of the heterogeneous scales. When heterogenous scales
+#' are applied, \code{idminim} and \code{idmaxim} indicate the minimum and
+#' maximum scores for the heterogenous scale, respectively. \code{idcol},
+#' \code{idminim} and \code{idmaxim} must have an identical length.
+#'
 #' @return Function returns a list of coordinate scores and
 #' two dimension plot.
 #'

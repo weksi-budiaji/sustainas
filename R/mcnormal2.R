@@ -1,4 +1,4 @@
-#' Montecarlo normal method for RAPFISH multi-dimensional
+#' Montecarlo method for RAPFISH multi-dimensional
 #'
 #' @description This function generate montecarlo simulation with normal method.
 #'
@@ -22,6 +22,16 @@
 #' values 10 and 0, respectively. A user can modify them.
 #' \code{sd} set the dispersion tendency of the simulation.
 #'
+#' \code{iddim} is a numeric vector to indicate the first column index of each
+#' dimension.
+#' \code{standard} is a logical value with TRUE or FALSE where TRUE can be
+#' applied for heterogenous scales among variables. \code{idcol} indicates
+#' the column number of the heterogeneous scales. When heterogenous scales
+#' are applied, \code{idminim} and \code{idmaxim} indicate the minimum and
+#' maximum scores for the heterogenous scale, respectively. \code{idcol},
+#' \code{idminim} and \code{idmaxim} must have an identical length.
+#' \code{dim.name} is the name for the dimensions.
+#'
 #' @return Function returns coordinates of Montecarlo simulation.
 #'
 #' @author Weksi Budiaji \cr Contact: \email{budiaji@untirta.ac.id}
@@ -34,6 +44,14 @@
 #'
 #' @examples
 #' #data simulation
+#' data("RapEqualScale15n10")
+#' rest <- rapfish2(RapEqualScale15n10, num_fish = 10, minim=1, maxim=5,
+#' iddim = c(1,7,13,19,25))
+#' rest
+#' MCmult <- mc_normal2(10, RapEqualScale15n10, minim = 1, maxim = 5,
+#' iddim = c(1,7,13,19,25), sd = 0.25)
+#' MCmult$coord
+#' rapsummary(MCmult$coord)
 #'
 #' @export
 

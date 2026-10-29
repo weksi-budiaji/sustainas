@@ -69,12 +69,14 @@ The [**sustainas**](https://cran.r-project.org/package=sustainas) package is des
     + [Rapfish calculation](#algor)
     + [Rapfish plot](#plot)
     + [Rapfish leverage](#leverage)
-    + [Rapfish simulation](#simulation)
+    + [Rapfish montecarlo simulation](#simulation)
 * sustainability livelihood analysis:
     + [Livelihood vulnerability index](#lvi)
     + [Sustainability radar plot](#radar)
+    + [Montecarlo livelihood vulnerability index](#mclvi)
 * Influence–interest stakeholder analysis:
     + [Influence–interest plot](#iiplot)
+    + [Montecarlo Influence-Interest](#mcii)
 
 ## 2. Rapid Appraisal for Fisheries (Rapfish)
 
@@ -90,6 +92,13 @@ data("social")
 (res <- rapfish(social))
 ```
 
+For multi-dimensional RAPFISH, `rapfish2` function can be applied.
+
+```{r}
+data("RapEqualScale15n10")
+(res2 <- rapfish2(RapEqualScale15n10,num_fish = 10,minim=1,maxim=5,iddim = c(1,7,13,19,25)))
+```
+
 [(Back to Intoduction)](#intro)
 
 ### 2.B. Plot (`rapplot`) {#plot}
@@ -98,6 +107,7 @@ The `rapplot` draws the rapfish result in two dimensional graph. The first dimen
 
 ```{r, fig.width=7, fig.asp=0.8}
 rapplot(res, title = "social")
+rapplot(res2, title = "multidimensional")
 ```
 
 [(Back to Intoduction)](#intro)
@@ -112,25 +122,28 @@ levx$data
 levx$plot
 ```
 
+For leverage of multi-dimensional RAPFISH, `leverage2` function can be applied.
+
+```{r, fig.width=7, fig.asp=0.8}
+data("RapEqualScale15n10")
+res2 <- rapfish2(RapEqualScale15n10,num_fish = 10,minim=1,maxim=5,iddim = c(1,7,13,19,25))
+leverage2(RapEqualScale15n10,res2,iddim =c(1,7,13,19,25))
+```
+
+
 [(Back to Intoduction)](#intro)
 
-### 2.D. Simulation (`mc_triangular` and `mc_normal`) {#simulation}
+### 2.D. Montecarlo Simulation (`mc_normal`) {#simulation}
 
-The `mc_triangular` and `mc_normal` generate simulated data based on the triangular and normal methods. These two function have similar arguments consisting of `n` generated data and the original data. The result is *n* times *number of objects* simulated data. This data can be summarized in a plot via `rapsummary` function. Five simulated data per object via triangular method can be generated and plotted.
+The `mc_normal` generates simulated data based on the normal method. This  function have arguments consisting of `n` generated data and the original data. The result is *n* times *number of objects* simulated data. This data can be summarized in a plot via `rapsummary` function. Five simulated data per object via normal method can be generated and plotted.
 
 ```{r, fig.width=7, fig.asp=0.8}
 set.seed(2025)
-simultri <- mc_triangular(10,social)
-tail(simultri)
-rapsummary(simultri, title = "social (triangular)")
+simult <- mc_normal(10,social, sd = 0.5)
+tail(simult)
+rapsummary(simult, title = "Montecarlo of social data")
 ```
 
-Normal method can be also applied.
-
-```{r, fig.width=7, fig.asp=0.8}
-simulnormal <- mc_normal(10,social)
-rapsummary(simulnormal, title = "social (normal)",scatter=FALSE)
-```
 
 [(Back to Intoduction)](#intro)
 
@@ -164,12 +177,23 @@ Function `radarplot`` shows the vulnerability score in each dimensions in a plot
 #data simulation
 data("three")
 rest <- lvi(three, sub.id = c(1,9,16),dim.name = c("Social","Institution","Technology"))
-radarplot(rest, lvi.out=TRUE, object = 5)
+radarplot(rest,lvi.out = TRUE, object = 5)
 ```
 
 [(Back to Intoduction)](#intro)
 
-### 3.C. Influence Interest plot (`iiplot`) {#iiplot}
+### 3.C. Montecarlo Livelihood Vulnerability Index (`mc_lvi`) {#mclvi}
+
+The `mc_lvi` generates simulated data based on the normal method. This  function have arguments consisting of `n` generated data and the original data. The result is *n* times *number of objects* simulated data. 
+
+```{r}
+hasil_mc <- mc_lvi(n = 100, three, sub.id =  c(1,9,16),  dim.name = c('Social','Institution','Technology'), minim = 0, maxim = 10, sd=1)
+hasil_mc$mean
+```
+
+[(Back to Intoduction)](#intro)
+
+### 3.D. Influence Interest plot (`iiplot`) {#iiplot}
 
 Data `sldata` has two dimensions of influence and interest @bryson. The scores in the data can be plotted to identify stakeholders positions. 
 
@@ -177,6 +201,17 @@ Data `sldata` has two dimensions of influence and interest @bryson. The scores i
 #data simulation
 data("sldata")
 iiplot(sldata)
+```
+
+[(Back to Intoduction)](#intro)
+
+### 3.E. Montecarlo Influence-Interest (`mc_ii`) {#mcii}
+
+The `mc_ii` generates simulated data based on the normal method. This  function have arguments consisting of `n` generated data and the original data. The result is *n* times *number of objects* simulated data. This data can be summarized in a plot via `iisummary` function.
+
+```{r, fig.width=7, fig.asp=0.8}
+hasil_mc_ii <- mc_ii(n = 100, dat = sldata, sub.id = c(1, 6), min.influ = 1, max.influ = 5, min.inter = 1, max.inter = 5, sd = 0.5)
+iisummary(hasil_mc_ii,sub.id = c(1, 6),  min.influ = 1, max.influ = 5, min.inter = 1, max.inter = 5, tot.id = 10)
 ```
 
 [(Back to Intoduction)](#intro)

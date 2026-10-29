@@ -52,12 +52,15 @@ the rows are the fish/ objects. \code{num_fish} indicates the number of
 fish/ objects. For \code{minim} and  \code{maxim} arguments, they have default
 values 0 and 10, respectively. A user can modify them.
 
+\code{iddim} is a numeric vector to indicate the first column index of each
+dimension.
 \code{standard} is a logical value with TRUE or FALSE where TRUE can be
 applied for heterogenous scales among variables. \code{idcol} indicates
 the column number of the heterogeneous scales. When heterogenous scales
 are applied, \code{idminim} and \code{idmaxim} indicate the minimum and
 maximum scores for the heterogenous scale, respectively. \code{idcol},
 \code{idminim} and \code{idmaxim} must have an identical length.
+\code{dim.name} is the name for the dimensions.
 }
 \examples{
 #data simulation

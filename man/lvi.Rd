@@ -27,7 +27,7 @@ This function calculates Livelihood vulnerability index
 The data set is a data frame. The columns in \code{datlvi}
 indicate variables where the rows are the districts/ objects.
 \code{sub.id} indicates the column id of the first variable for
-each sub-component.
+each sub-component. \code{dim.name} is the name for the dimensions.
 }
 \examples{
 #data simulation

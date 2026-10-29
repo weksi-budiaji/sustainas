@@ -89,20 +89,6 @@ scale_data <- function(dat, n_col, col_indices, minim, maxim,
   return(df_std)
 }
 
-triangular <- function(n=10,minim=0,maxim=10,lk=5) {
-  if((lk<minim)||(lk>maxim)) {
-    stop("Likelihood value outside of range [minimum maximum]")
-  }
-  u <- runif(n)
-  mode <- (lk-minim)/(maxim-minim)
-  s1 <- which(u<=mode)
-  s2 <- which(u>mode)
-  u[s1] <- sqrt(mode*u[s1])
-  u[s2] <- 1-sqrt((1-mode)*(1-u[s2]))
-  result <- minim+(maxim-minim)*u
-  return(result)
-}
-
 composit <- function(x){
   (x-min(x))/(max(x)-min(x))
 }

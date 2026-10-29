@@ -14,8 +14,11 @@
 #' @details \code{n} is a number of the data simulation.
 #' The data set \code{dat} arguments is a data set as a source
 #' data for the simulation.
-#' For \code{maxim} and  \code{minim} arguments, they have default
-#' values 10 and 0, respectively. A user can modify them.
+#' For \code{sub.id}, user has to input the first column of each dimension,
+#' for example \code{sub.id=c(1,6)} meaning that the influence indicators are
+#' column 1 to 5 while the rests are the interest indicators.
+#' Minimum and maximum scores for each dimension are also defined in the
+#' \code{min.influ}, \code{max.influ}, \code{min.inter}, and \code{max.inter}.
 #' \code{sd} set the dispersion tendency of the simulation.
 #'
 #' @return Function returns coordinates of Montecarlo simulation.
@@ -29,6 +32,11 @@
 #'
 #' @examples
 #' #data simulation
+#' data("sldata")
+#' iiplot(sldata)
+#' hasil_mc_ii <- mc_ii(n = 100, dat = sldata, sub.id = c(1, 6),
+#' min.influ = 1, max.influ = 5, min.inter = 1, max.inter = 5, sd = 0.5)
+#' hasil_mc_ii
 #'
 #' @export
 
